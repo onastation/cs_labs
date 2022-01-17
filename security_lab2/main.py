@@ -3,7 +3,7 @@ def do_xoring(line_x, line_y):
     return bytearray(xored)
 
 
-def get_the_beginning(raw_lines, lines_count, suspected_text):
+def check_text(raw_lines, lines_count, actual_text, suspected_text):
     for j in range(lines_count):
         print('New try')
 
@@ -11,20 +11,20 @@ def get_the_beginning(raw_lines, lines_count, suspected_text):
 
         likely_wrong = False
 
-        susp_deciphered = {}
+        suspected_deciphered = {}
         for i in range(lines_count):
             deciphered = do_xoring(do_xoring(raw_lines[line_index], raw_lines[i]),
                                    bytearray.fromhex(''.join(hex(ord(c))[2:] for c in suspected_text)))
             deciphered_text = deciphered[:len(suspected_text)].decode("utf-8")
             print(f'line {i} after xor: {deciphered_text}')
-            susp_deciphered[i] = deciphered
+            suspected_deciphered[i] = deciphered
             chars = set('#@%^*${}[]+=~/<>\\')
             if any((c in chars) for c in deciphered_text):
                 likely_wrong = True
 
         if not likely_wrong:
             print('\nSaving results\n', '-' * 50)
-            for line_number, line in susp_deciphered.items():
+            for line_number, line in suspected_deciphered.items():
                 actual_text[line_number] = line[:len(suspected_text)].decode('utf-8')
         else:
             print('\nLikely wrong, results will not be saved\n', '-' * 50)
@@ -32,7 +32,6 @@ def get_the_beginning(raw_lines, lines_count, suspected_text):
         print('Result:')
         for line_number, line in actual_text.items():
             print(line_number, ' | ', line)
-    return susp_deciphered
 
 
 if __name__ == '__main__':
@@ -43,4 +42,7 @@ if __name__ == '__main__':
             raw_lines.append(bytearray.fromhex(line))
     print(raw_lines)
     lines_count = len(raw_lines)
-    get_the_beginning(raw_lines, lines_count, 'The ')
+    #check_text(raw_lines, lines_count, 'The ')
+    while True:
+        new_text = input("Input new text to check: ")
+        check_text(raw_lines, lines_count, actual_text, new_text)
