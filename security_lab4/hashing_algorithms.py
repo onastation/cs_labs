@@ -30,7 +30,7 @@ def create_sha1_with_salt(passwords):
 
 
 def create_md5_passwords(passwords):
-    return [hashlib.md5(password.encode(ENCODING)).hexdigest() for password in passwords]
+    return [hashlib.md5(password.encode('utf-8')).hexdigest() for password in passwords]
 
 
 def create_argon2i_passwords(passwords):
